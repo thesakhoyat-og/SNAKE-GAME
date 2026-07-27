@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>// snake.exe — root@localhost</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="left">
+      <span class="prompt">root@localhost</span>:<span class="path">~/exploits</span>$
+      <span class="cmd"> ./snake.exe</span> --target=grid --mode=stealth<span class="blink">_</span>
+    </div>
+    <div class="right">
+      <span>conn: <span class="ok">SECURE</span></span>
+      <span>tor: <span class="ok">ON</span></span>
+      <span>uid: <span class="warn">0</span></span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <div class="stage">
+    <div class="panel">
+      <h3>// SESSION</h3>
+      <div class="row"><span>packets</span><span class="v" id="score">0</span></div>
+      <div class="row"><span>high.score</span><span class="v acc" id="high">0</span></div>
+      <div class="row"><span>length</span><span class="v" id="len">3</span></div>
+      <div class="row"><span>speed</span><span class="v warn" id="speed">1.0x</span></div>
+      <div class="row"><span>status</span><span class="v" id="state">IDLE</span></div>
+      <div class="controls-block">
+        <h3 class="controls-title">// CONTROLS</h3>
+        <div><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> / <span class="key">↑↓←→</span></div>
+        <div class="control-row"><span class="key">SPACE</span> pause</div>
+        <div><span class="key">R</span> restart</div>
+      </div>
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="game" width="600" height="600"></canvas>
+      <div class="overlay show" id="overlay">
+        <h1 class="glitch" data-t="SNAKE.EXE">SNAKE.EXE</h1>
+        <p>// intercepting data packets on encrypted grid //</p>
+        <div class="hint">press <span class="key">SPACE</span> or any direction to begin</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>// SYSLOG</h3>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div>// build 0xC0FFEE — single-file ELF, no telemetry</div>
+    <div>eat packets. avoid self. trust nothing.</div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

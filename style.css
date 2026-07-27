@@ -1,0 +1,234 @@
+:root {
+  --bg: #0a0e0a;
+  --bg2: #060906;
+  --grid: #0f1a0f;
+  --fg: #00ff7a;
+  --fg-dim: #00b35a;
+  --fg-faint: #0a3a1a;
+  --accent: #ff2e63;
+  --warn: #ffcc00;
+  --cyan: #00e5ff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg2);
+  color: var(--fg);
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Scanline overlay */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,255,122,0.04) 0px,
+      rgba(0,255,122,0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  z-index: 5;
+}
+
+/* Vignette */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+  z-index: 6;
+}
+
+.wrap {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 14px 22px;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- Header ---------- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--fg-faint);
+  padding-bottom: 8px;
+  font-size: 13px;
+  color: var(--fg-dim);
+}
+header .left .prompt { color: var(--fg); }
+header .left .path   { color: var(--cyan); }
+header .left .cmd    { color: var(--cyan); }
+header .left .blink  { animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+header .right span { margin-left: 14px; }
+header .right .ok   { color: var(--fg); }
+header .right .warn { color: var(--warn); }
+
+/* ---------- Stage layout ---------- */
+.stage {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  gap: 18px;
+  min-height: 0;
+}
+
+/* ---------- Side panels ---------- */
+.panel {
+  border: 1px solid var(--fg-faint);
+  background: linear-gradient(180deg, rgba(0,255,122,0.02), rgba(0,0,0,0.4));
+  padding: 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--fg-dim);
+  position: relative;
+  overflow: hidden;
+}
+.panel h3 {
+  color: var(--fg);
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--fg-faint);
+  padding-bottom: 6px;
+}
+.panel .row { display: flex; justify-content: space-between; }
+.panel .row .v        { color: var(--fg); }
+.panel .row .v.warn   { color: var(--warn); }
+.panel .row .v.acc    { color: var(--accent); }
+
+.panel .key {
+  display: inline-block;
+  border: 1px solid var(--fg-faint);
+  padding: 1px 6px;
+  margin: 0 2px;
+  font-size: 11px;
+  color: var(--fg);
+  background: rgba(0,255,122,0.05);
+}
+
+.controls-block {
+  margin-top: 14px;
+  border-top: 1px dashed var(--fg-faint);
+  padding-top: 10px;
+}
+.controls-title {
+  border: none !important;
+  padding: 0 !important;
+  margin-bottom: 8px !important;
+}
+.control-row { margin-top: 6px; }
+
+/* ---------- Syslog ---------- */
+#log {
+  height: 100%;
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--fg-dim);
+}
+#log .line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#log .line.ok::before   { content: "[+] "; color: var(--fg); }
+#log .line.bad::before  { content: "[!] "; color: var(--accent); }
+#log .line.info::before { content: "[*] "; color: var(--cyan); }
+
+/* ---------- Canvas ---------- */
+.canvas-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+canvas {
+  background: var(--bg);
+  border: 1px solid var(--fg-dim);
+  box-shadow:
+    0 0 0 1px var(--bg2),
+    0 0 24px rgba(0,255,122,0.15),
+    inset 0 0 60px rgba(0,255,122,0.05);
+  image-rendering: pixelated;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* ---------- Overlay ---------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(6, 9, 6, 0.85);
+  backdrop-filter: blur(2px);
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.overlay.show { opacity: 1; pointer-events: auto; }
+
+.overlay h1 {
+  font-size: 28px;
+  letter-spacing: 6px;
+  color: var(--fg);
+  text-shadow: 0 0 10px var(--fg);
+  margin-bottom: 6px;
+}
+.overlay h1.bad {
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent);
+}
+.overlay p    { color: var(--fg-dim); font-size: 13px; margin-bottom: 18px; }
+.overlay .hint { color: var(--fg); font-size: 12px; }
+.overlay .hint .key {
+  border: 1px solid var(--fg);
+  padding: 2px 8px;
+}
+
+/* ---------- Glitch text effect ---------- */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+.glitch::before, .glitch::after {
+  content: attr(data-t);
+  position: absolute; left: 0; top: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.glitch::before {
+  color: var(--accent);
+  transform: translate(2px, 0);
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  opacity: 0.7;
+}
+.glitch::after {
+  color: var(--cyan);
+  transform: translate(-2px, 0);
+  clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+  opacity: 0.7;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px dashed var(--fg-faint);
+  padding-top: 6px;
+  font-size: 11px;
+  color: var(--fg-faint);
+}
