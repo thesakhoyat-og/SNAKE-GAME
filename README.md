@@ -176,7 +176,7 @@ Possible future improvements include:
 
 ## Author
 
-**Sakhoyat Hossain Siam**
+Md Sakhoyat Hossain Siam
 
 ## Licence
 
